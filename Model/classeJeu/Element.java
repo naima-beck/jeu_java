@@ -6,15 +6,36 @@ import java.util.*;
 
 public class Element {
 
-
-    public Element() {
+	private String description;
+    private int valeur;
+    
+    
+    public Element(int valeur) {
+    	this.valeur=valeur;
+    	if (this.valeur > 0) {
+            this.description = "Bonus";
+        } 
+        else if (this.valeur < 0) {
+            this.description = "Malus"; 
+        } 
+        else {
+            this.description = null; // y'a rien (valeur=0)
+        }
     }
 
-    public String description;
-    public int valeur;
-
-
-    public void getValeur() {
+    
+    public int getValeur() {
+    	return this.valeur;
     }
-
+    
+    
+    public String getDescription() {
+    	return this.description;
+    }
+    
+    @Override
+    public String toString() {
+        return description + " (" + valeur + ")";
+    }
+    
 }
