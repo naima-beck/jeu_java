@@ -22,6 +22,7 @@ java.io
 ## Compilation et Exécution
 Le projet ne nécessite pas de données externes. Il suffit de compiler les fichiers sources situés dans le package classeJeu.
 
+```bash
 projet-chasseur-proie/
 ├── src/
 │   └── classeJeu/          # Package principal
@@ -34,6 +35,7 @@ projet-chasseur-proie/
 │       └── Proie.java      # Logique de la Proie
 ├── bin/                    # Fichiers compilés
 └── README.md
+```
 
 ## Composantes du Jeu analysées
 L’étude s’appuie sur trois ensembles de classes principaux :L'Environnement (Grille) : Génération d'un plateau (N  M) avec placement d'une cible fixe et gestion des voisins.
@@ -45,7 +47,10 @@ Malus : Perte d'énergie (-10).
 La Dynamique des Tours : Gestion de l'épuisement progressif de l'énergie. Le jeu se termine si le Chasseur capture la Proie, si la Cible est atteinte, ou par épuisement total de l'énergie (Match Nul).
 
 ## Auteurs
+- [@naima-beck](https://www.github.com/naima-beck)
+- [@axellelepoul-ctrl](https://www.github.com/axellelepoul-ctrl)
 
+Cy Tech - Sciences-Po Saint-Germain-En-Laye - [2025/2026]
 
 ## License
 Ce projet est réalisé dans un cadre académique. Il est sous licence CC BY-NC-SA 4.0
