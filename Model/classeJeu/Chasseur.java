@@ -22,9 +22,12 @@ public class Chasseur extends Personnage {
     		for (Case v : voisines) {
     			if (v == versProie) {
     				return v;
-    			}
+    			}}
 		
     	//Si la proie n'est pas dans les plus proches voisions, on vise la cible
+    	if (voisines == null || voisines.isEmpty()) {
+        return null;
+    }
     	Case cible = grille.getCible();
     	if (cible == null) return voisines.get(0); //Si pas de cible
     	
@@ -39,9 +42,8 @@ public class Chasseur extends Personnage {
             }
         }
 
-        	return meilleure;			
-    	}
-    }
+        return meilleure;}			
+   
  		
     		
     public void eliminer(Proie p) {
