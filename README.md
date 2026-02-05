@@ -24,6 +24,8 @@ Le projet ne nécessite pas de données externes. Il suffit de compiler les fich
 
 ```bash
 projet-chasseur-proie/
+├── .settings
+├── bin/                    # Fichiers compilés
 ├── src/
 │   └── classeJeu/          # Package principal
 │       ├── Main.java       # Point d'entrée
@@ -33,8 +35,12 @@ projet-chasseur-proie/
 │       ├── Element.java    # Bonus et Malus
 │       ├── Chasseur.java   # Logique du Chasseur
 │       └── Proie.java      # Logique de la Proie
-├── bin/                    # Fichiers compilés
-└── README.md
+├──.DS_Store
+├──.classpath
+├──.project
+├──README.md
+├──classpath
+└──project
 ```
 
 ## Composantes du Jeu analysées
