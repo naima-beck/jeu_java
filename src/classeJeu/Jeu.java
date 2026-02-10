@@ -1,5 +1,4 @@
 package classeJeu;
-import java.util.*;
 
 
 public class Jeu {
@@ -11,6 +10,7 @@ public class Jeu {
     public Chasseur chasseur;
     public Grille grille;
     
+    
 
     public Jeu() {
     	this.nbTour=0;
@@ -18,9 +18,13 @@ public class Jeu {
     	
     	genererGrille();
     	
-    	this.chasseur = new Chasseur(); 
-        //this.proie = new Proie();
+    	Case caseDepartChasseur = grille.cases[0][0];
+    	Case caseDepartProie = grille.cases[(grille.largeur - 1)/2][(grille.hauteur - 1)/2]; // la proie commence au milieu
+    	
+    	this.chasseur = new Chasseur(50, caseDepartChasseur); 
+        this.proie = new Proie(50, caseDepartProie);
     }
+    
     
     public void genererGrille() {
     	this.grille = new Grille(10, 10);
@@ -29,57 +33,97 @@ public class Jeu {
     
     public void tourDeJeu() {
     	nbTour ++;
+    	System.out.println("\n>>> TOUR " + nbTour + " (Z,Q,S,D + Entrée)");
     	
-    	// toutes les actions deplacement chasseur et proie 
     	
-    	grille.afficherGrille();
+    	grille.afficherGrille(proie,chasseur);
+    	proie.seDeplacer(grille);
+    	gererCollision(); 
+    	if (verifVictoire()) {
+            jeuEnCours = false;
+            return;
+        }
+    	
+    	System.out.println("Le Chasseur se déplace...");
+        
+    	chasseur.seDeplacer(grille, proie);
+    	gererCollision();
+    	
+    	if(proie.mort)
     	
     	try { Thread.sleep(1000); } catch (InterruptedException e) {} // petite pause
     }
-
+    
     
     public void jouer() {
     	System.out.println("=== DÉBUT DE LA PARTIE ===");
-        grille.afficherGrille();
+        //grille.afficherGrille(proie,chasseur);
 
         // Tant que le jeu n'est pas fini, on continue
         while (jeuEnCours) {
             tourDeJeu();
-            
-            // On vérifie si quelqu'un a gagné à la fin du tour
+   
             if (estTermine()) {
                 jeuEnCours = false;
             }
         }
         
+        
         // Fin de partie
+        System.out.println("\n=== FIN DE PARTIE ===");
+        grille.afficherGrille(proie, chasseur);
+        
         Personnage gagnant = determinerVainqueur();
-        if (gagnant != null) {
-            System.out.println("Le vainqueur est : " + gagnant.getClass().getSimpleName());
+        if (gagnant instanceof Proie) {
+            System.out.println("Victoire ! La proie s'est échappée !");
+        } else if (gagnant instanceof Chasseur) {
+            System.out.println("GAME OVER ! Le chasseur a mangé la proie.");
         } else {
-            System.out.println("Match Nul (Épuisement des énergies) !");
+            System.out.println("MATCH NUL (Bug ou épuisement).");
         }
     }
 
     private boolean verifVictoire() { //retourne booléen
-        // à completer par axelle
-    	
+    	if(proie.position.x == grille.xCible && proie.position.y == grille.yCible) 
+    		return true;
     	return false;
+    }
+    
+    private void gererCollision() {
+        if (chasseur.position.x == proie.position.x && chasseur.position.y == proie.position.y) {
+            chasseur.eliminer(proie);
+        }
     }
 
     private boolean estTermine() {
     	if (verifVictoire()) 
     		return true;
     	
-    	// if (chasseur.getEnergie() <= 0 && proie.getEnergie() <= 0) return true;
+    	if (proie.mort && chasseur.mort) // les 2 sont morts
+    		return true;
+    	
+    	else if (proie.mort) // la proie est morte
+    		return true;
+    	
         return false;
     } 
     
+    
     public Personnage determinerVainqueur() {
+    	if (verifVictoire()) {
+            return this.proie;
+        }
+        
+        if (proie.mort) {
+            return this.chasseur;
+        }
+        
         return null;
     }
-
-
     
-
+    public static void main(String[] args) {
+        Jeu maPartie = new Jeu();
+        maPartie.jouer();
+    }
+   
 }
