@@ -58,5 +58,5 @@ La Dynamique des Tours : Gestion de l'épuisement progressif de l'énergie. Le j
 
 Cy Tech - Sciences-Po Saint-Germain-En-Laye - [2025/2026]
 
-## License
+## Licence
 Ce projet est réalisé dans un cadre académique. Il est sous licence CC BY-NC-SA 4.0
