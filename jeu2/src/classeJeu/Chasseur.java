@@ -6,7 +6,7 @@ import java.util.*;
 public class Chasseur extends Personnage {
 
     public Chasseur(int energieInitiale, Case positionInitiale) {
-	    super(energieInitiale, positionInitiale);
+	    super("Le Chasseur",energieInitiale, positionInitiale);
 	}
 
     public Case prochaineCellule(Grille grille, Proie proie) {
@@ -14,39 +14,124 @@ public class Chasseur extends Personnage {
     		return null; 
     	}
     	
-    	//Vérfiier qu'il y a des plus proches voisins et obtenir leur liste
-    	List <Case> voisines = grille.getPlusProcheVoisin(this.position);
-    	if (voisines == null || voisines.isEmpty()) {
-    		return null;
-    	}
     	
-    	//Obtenir la case de la proie si elle est dans les plus proches voisins
-    	if (proie != null && proie.getPosition() != null) { //Si la proie est toujours sur la grille
-    		Case versProie = proie.getPosition(); 
-    		for (Case v : voisines) {
-    			if (v == versProie) {
-    				return v;
-    			}
-    		}
-    	}
-		
-    	//Si la proie n'est pas dans les plus proches voisions, on vise la cible
-    	Case cible = grille.getCible();
-    	if (cible == null) return voisines.get(0); //Si pas de cible
+    	List<Case> voisines = grille.getPlusProcheVoisin(this.position);
+        if (proie != null && !proie.mort) {
+            for (Case v : voisines) {
+                if (v == proie.getPosition()) {
+                    return v; // On fonce dessus immédiatement !
+                }
+            }
+        }
+        
+        
+        Case destination = grille.getCible();
+        if (destination == null) return null;
+        
+        
     	
-    	Case meilleure = voisines.get(0);
-        int meilleureDistance = meilleure.distanceVers(cible);
-    	
-    	for (Case m : voisines) {
-            int d = m.distanceVers(cible);
-            if (d < meilleureDistance) {
-                meilleureDistance = d;
-                meilleure = m;
+    	// ALGORITHME DE DIJKSTRA 
+        // Initialisation des coûts (infini partout sauf au départ)
+        Map<Case, Integer> couts = new HashMap<>();
+        Map<Case, Case> parents = new HashMap<>();
+        PriorityQueue<Case> filePriorite = new PriorityQueue<>(Comparator.comparingInt(couts::get));
+
+        for (int x = 0; x < grille.largeur; x++) {
+            for (int y = 0; y < grille.hauteur; y++) {
+                couts.put(grille.cases[x][y], Integer.MAX_VALUE);
+            }
+        }
+        
+        couts.put(this.position, 0);
+        filePriorite.add(this.position);
+
+        while (!filePriorite.isEmpty()) {
+            Case actuelle = filePriorite.poll();
+
+            if (actuelle == destination) break; // On a trouvé le chemin le plus court
+
+            for (Case voisine : grille.getPlusProcheVoisin(actuelle)) {
+                // CALCUL DU POIDS (Le coeur de l'esquive)
+                int poidsCase = evaluerPoids(voisine);
+                int nouveauCout = couts.get(actuelle) + poidsCase;
+
+                if (nouveauCout < couts.get(voisine)) {
+                    couts.put(voisine, nouveauCout);
+                    parents.put(voisine, actuelle);
+                    filePriorite.add(voisine);
+                }
             }
         }
 
-        return meilleure;}			
+        // Reconstruction du chemin pour trouver la 1e case où aller
+        Case etape = destination;
+        Case prochaine = null;
+        
+        while (parents.get(etape) != null) {
+            if (parents.get(etape) == this.position) {
+                prochaine = etape;
+                break;
+            }
+            etape = parents.get(etape);
+        }
+
+        if (prochaine == null || prochaine == this.position) {
+            List<Case> lvoisines = grille.getPlusProcheVoisin(this.position);
+            Case meilleureOption = lvoisines.get(0);
+            double meilleurScore = Double.MAX_VALUE;
+
+            for (Case v : lvoisines) {
+                // Le score = la distance vers la cible + le poids de la case
+                // On divise la distance par 2 pour que le rapprochement soit prioritaire sur la peur
+                int danger = evaluerPoids(v);
+                int distance = v.distanceVers(grille.getCible());
+                double score = danger + (distance * 5); 
+
+                if (score < meilleurScore) {
+                    meilleurScore = score;
+                    meilleureOption = v;
+                }
+            }
+            prochaine = meilleureOption;
+        }
+
+        return prochaine;
+    }		
+    
+    
    
+    private int evaluerPoids(Case c) {
+        int poidsBase = 10; 
+        
+        if (!c.contientItem()) return poidsBase;
+
+        Item it = c.item;
+        
+        // CAS DES DANGERS (Toujours prioritaires)
+        if (it instanceof Piege) return (this.energie > 15) ? 10 : 1000; 
+        if (it instanceof Poison) return 100;
+        if (it instanceof AdaptateurFeu) return 50;
+        if (it instanceof AdaptateurEau) return 50;
+
+        // CAS DES BONUS (Intelligence adaptative)
+        if (it instanceof Element && it.getEnergie() > 0) {
+            // Si le chasseur a moins de 5 points d'énergie, le bonus devient irrésistible (poids 1)
+            if (this.energie < 5) return 1; 
+            // Sinon, c'est juste une case normale
+            return poidsBase;
+        }
+        
+        // CAS DES ANTIDOTES
+        if (it instanceof Antidote && this.getEtat() instanceof EtatEmpoisonne) {
+            return 1; 
+        }
+
+        // MALUS CLASSIQUE
+        if (it instanceof Element && it.getEnergie() < 0) return 30;
+
+        return poidsBase;
+    }
+
  		
     		
     public void eliminer(Proie p) {
@@ -59,12 +144,23 @@ public class Chasseur extends Personnage {
     	
     }
 
-    public void seDeplacer(Grille grille, Proie proie) {
-    	Case next = prochaineCellule(grille, proie);
-    	if (next != null) {
-            super.seDeplacer(next);
+    public String seDeplacer(Grille grille, Proie proie) {
+    	Case prochaine;
+
+        if (this.getEtat() instanceof EtatEtourdi) {
+            // Le chasseur aussi perd la tête !
+            List<Case> voisins = grille.getPlusProcheVoisin(this.position);
+            prochaine = voisins.get(new java.util.Random().nextInt(voisins.size()));
+        } else {
+            prochaine = prochaineCellule(grille, proie); // Son Dijkstra habituel
+        }
+
+        if (prochaine != null) {
+            String msg = super.seDeplacer(prochaine);
             eliminer(proie);
-            }
+            return msg;
+        }
+        return null;
     }
 
 }

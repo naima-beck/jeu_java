@@ -16,4 +16,10 @@ public class AdaptateurFeu implements Item {
     public String toString() {
         return "Feu (Attention ça brûle !)";
     }
+    
+    @Override
+    public void interagir(Personnage p) {
+        // Au lieu de simples dégâts, on change l'état
+        p.setEtat(new EtatEtourdi());
+    }
 }

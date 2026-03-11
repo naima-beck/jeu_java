@@ -22,20 +22,12 @@ public class Element implements Item {
         }
     }
 
-    public int getValeur() {
-    	return this.valeur;
-    }
-    
-    
+  
     public String getDescription() {
     	return this.description;
     }
     
-    @Override
-    public String toString() {
-        return description + " (" + valeur + ")";
-    }
-
+    
     public int getEnergie() {
         return this.valeur; // On renvoie la valeur stockée (-10 ou +10)
     }

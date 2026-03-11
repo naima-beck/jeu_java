@@ -1,7 +1,9 @@
 package classeJeu;
 
+import java.util.ArrayList;
+import java.util.List;
 
-public class Jeu {
+public class Jeu { //
 
     public int nbTour;
     public boolean jeuEnCours;
@@ -10,7 +12,24 @@ public class Jeu {
     public Chasseur chasseur;
     public Grille grille;
     
+    private List<Observer> observateurs = new ArrayList<>();
+    private String dernierMessage = "";
     
+    private static final int HIGH_VALUE = 51; //On définit la valeur seuil du changement de mode de déplacement
+    
+    
+    public void ajouterObservateur(Observer o) {
+        observateurs.add(o);
+    }
+
+    public void notifierObservateurs(TypeNotification type) {
+        for (Observer o : observateurs) {
+            o.actualiser(this, type);
+        }
+    }
+    
+    public String getDernierMessage() { return dernierMessage; }
+    public void setDernierMessage(String msg) { this.dernierMessage = msg; }
 
     public Jeu() {
     	this.nbTour=0;
@@ -23,7 +42,10 @@ public class Jeu {
     	
     	this.chasseur = new Chasseur(50, caseDepartChasseur); 
         this.proie = new Proie(50, caseDepartProie);
+        
+        //this.proie.ajouterObservateur(this);
     }
+    
     
     
     public void genererGrille() {
@@ -31,64 +53,88 @@ public class Jeu {
     	this.grille.placerBonusMalus(10, 10, 5, 5, 5, 5, 2);
     }
     
+    
+    public void x(Personnage p) {
+    	
+    	String msgMouvement = (p instanceof Proie) ? ((Proie) p).seDeplacer(grille,this) : ((Chasseur) p).seDeplacer(grille,proie) ; 
+        
+    	if (msgMouvement != null) {
+            setDernierMessage(msgMouvement);
+            notifierObservateurs(TypeNotification.MESSAGE_SEUL);
+        }
+
+
+    	String msgEtat = p.appliquerEtat(); 
+        if (msgEtat != null) {
+            setDernierMessage(msgEtat);
+            notifierObservateurs(TypeNotification.MESSAGE_SEUL);
+        }
+        
+    }
+    
     public void tourDeJeu() {
     	nbTour ++;
-    	System.out.println("\n>>> TOUR " + nbTour + " (Z,Q,S,D + Entrée)");
+    	setDernierMessage(""); //réinitialisation du message
     	
+
+    	notifierObservateurs(TypeNotification.DEBUT_TOUR);
     	
-    	
-    	grille.afficherGrille(proie,chasseur);
-    	proie.seDeplacer(grille);
-    	proie.subirEffetsPoison();
-    	
+    	if (proie.energie > HIGH_VALUE && !(proie.getStrategy() instanceof StrategieLibre)) {
+    		setDernierMessage("!!! ÉNERGIE ÉLEVÉE : Passage en MODE LIBRE (téléportation possible) !!!");
+            notifierObservateurs(TypeNotification.MESSAGE_SEUL);
+    		proie.setStrategy(new StrategieLibre());
+        } else if (proie.energie <= HIGH_VALUE && !(proie.getStrategy() instanceof StrategieManuelle)) {
+            setDernierMessage("--- ÉNERGIE FAIBLE : Retour en MODE MANUEL (cases adjacentes) ---");
+            notifierObservateurs(TypeNotification.MESSAGE_SEUL);
+            proie.setStrategy(new StrategieManuelle());
+        }
+
+    	x(proie);
+        
+        
     	gererCollision(); 
-    	if (verifVictoire()) {
+    	if (estTermine()) {
             jeuEnCours = false;
+            notifierObservateurs(TypeNotification.FIN_PARTIE);
             return;
         }
     	
-    	System.out.println("Le Chasseur se déplace...");
+    	setDernierMessage("Le Chasseur se déplace...");
+    	notifierObservateurs(TypeNotification.MESSAGE_SEUL);
         
-    	chasseur.seDeplacer(grille, proie);
-    	chasseur.subirEffetsPoison();
+    	x(chasseur);
+    	
     	gererCollision();
     	
-    	if(proie.mort)
+    	if(estTermine()){
+            jeuEnCours = false;
+            notifierObservateurs(TypeNotification.FIN_PARTIE);
+        }
     	
-    	try { Thread.sleep(1000); } catch (InterruptedException e) {} // petite pause
+    	//try { Thread.sleep(1000); } catch (InterruptedException e) {} // petite pause
     }
     
     
     public void jouer() {
     	System.out.println("=== DÉBUT DE LA PARTIE ===");
-        //grille.afficherGrille(proie,chasseur);
-
-        // Tant que le jeu n'est pas fini, on continue
+       
         while (jeuEnCours) {
             tourDeJeu();
-   
-            if (estTermine()) {
-                jeuEnCours = false;
-            }
-        }
-        
-        
-        // Fin de partie
-        System.out.println("\n=== FIN DE PARTIE ===");
-        grille.afficherGrille(proie, chasseur);
-        
-        Personnage gagnant = determinerVainqueur();
-        if (gagnant instanceof Proie) {
-            System.out.println("Victoire ! La proie s'est échappée !");
-        } else if (gagnant instanceof Chasseur) {
-            System.out.println("GAME OVER ! Le chasseur a mangé la proie.");
-        } else {
-            System.out.println("MATCH NUL (Bug ou épuisement).");
+
         }
     }
 
-    private boolean verifVictoire() { //retourne booléen
+    private boolean verifVictoireProie() { //retourne booléen
     	if(proie.position.x == grille.xCible && proie.position.y == grille.yCible) 
+    		return true;
+    	
+    	return false;
+    }
+    
+    private boolean verifVictoireChasseur() {
+    	if (chasseur.position.x == grille.xCible && chasseur.position.y == grille.yCible)
+            return true;
+    	if(proie.mort)
     		return true;
     	return false;
     }
@@ -100,13 +146,14 @@ public class Jeu {
     }
 
     private boolean estTermine() {
-    	if (verifVictoire()) 
+    	if (verifVictoireProie()) 
     		return true;
+    	
+    	if (verifVictoireChasseur()) 
+    		return true;
+    	
     	
     	if (proie.mort && chasseur.mort) // les 2 sont morts
-    		return true;
-    	
-    	else if (proie.mort) // la proie est morte
     		return true;
     	
         return false;
@@ -114,11 +161,11 @@ public class Jeu {
     
     
     public Personnage determinerVainqueur() {
-    	if (verifVictoire()) {
+    	if (verifVictoireProie()) {
             return this.proie;
         }
         
-        if (proie.mort) {
+        if (verifVictoireChasseur()) {
             return this.chasseur;
         }
         
@@ -127,6 +174,11 @@ public class Jeu {
     
     public static void main(String[] args) {
         Jeu maPartie = new Jeu();
+        AfficheurConsole ecran = new AfficheurConsole();
+        
+        // On lie l'afficheur au jeu
+        maPartie.ajouterObservateur(ecran);
+        
         maPartie.jouer();
     }
    

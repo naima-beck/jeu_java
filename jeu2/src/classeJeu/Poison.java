@@ -9,7 +9,6 @@ public class Poison implements Item {
 
     @Override
     public void interagir(Personnage p) {
-        p.estEmpoisonne = true;
-        System.out.println("Oh non ! Tu as été empoisonné !");
+    	p.setEtat(new EtatEmpoisonne());
     }
 }

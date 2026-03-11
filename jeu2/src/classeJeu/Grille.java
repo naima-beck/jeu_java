@@ -29,15 +29,15 @@ public class Grille {
             }
         }
         
-        // cible en bas à droite de la grille
-        this.xCible = largeur-1;
-        this.yCible = hauteur-1;
+        // cible placée aléatoirement
+        this.xCible = random.nextInt(largeur);
+        this.yCible = random.nextInt(hauteur);
     }
 
     
     public void placerBonusMalus(int pBonus, int pMalus, int pFeu, int pEau, int pPoison, int pAntidote, int pPiege) {
         
-        // 1. Sécurité : On vérifie que le total ne dépasse pas 100%
+        // Sécurité : On vérifie que le total ne dépasse pas 100%
     	int total = pBonus + pMalus + pFeu + pEau + pPoison + pAntidote + pPiege;
         if (total > 100) {
             System.out.println("Erreur : Total > 100%. Je remets des valeurs par défaut.");
@@ -47,47 +47,33 @@ public class Grille {
 
         for (int x = 0; x < largeur; x++) {
             for (int y = 0; y < hauteur; y++) {
-                
-                // On ignore départ et arrivée
-                if ((x == 0 && y == 0) || (x == xCible && y == yCible)) { 
+                if ((x == (largeur - 1)/2 && y == (hauteur - 1)/2) || (x == xCible && y == yCible)) { 
                     continue; 
                 }
 
-                int tirage = random.nextInt(100); // 0 à 99
+                int tirage = random.nextInt(100);
 
-                // --- LOGIQUE CUMULATIVE ---
-                
-                // 1. Zone Bonus (ex: 0 à 9)
                 if (tirage < pBonus) {
-                    cases[x][y].setItem(new Element(random.nextInt(10) + 1)); // valeur entre 1 et 10
+                    cases[x][y].setItem(ItemFactory.creerItem("bonus"));
                 } 
-                // 2. Zone Malus (ex: 10 à 29) -> On ajoute pBonus pour décaler le seuil
                 else if (tirage < (pBonus + pMalus)) {
-                    cases[x][y].setItem(new Element(-(random.nextInt(10) + 1))); // valeur entre -1 et -10
+                    cases[x][y].setItem(ItemFactory.creerItem("malus"));
                 }
-                // 3. Zone Feu (ex: 30 à 39)
                 else if (tirage < (pBonus + pMalus + pFeu)) {
-                    cases[x][y].setItem(new AdaptateurFeu(new Feu()));
+                    cases[x][y].setItem(ItemFactory.creerItem("feu"));
                 }
-                // 4. Zone Eau (ex: 40 à 49)
                 else if (tirage < (pBonus + pMalus + pFeu + pEau)) {
-                    cases[x][y].setItem(new AdaptateurEau(new Eau()));
+                    cases[x][y].setItem(ItemFactory.creerItem("eau"));
                 }
-                
-                // 5. Zone Poison 
                 else if (tirage < (pBonus + pMalus + pFeu + pEau + pPoison)) {
-                    cases[x][y].setItem(new Poison());
+                    cases[x][y].setItem(ItemFactory.creerItem("poison"));
                 }
-                // 6. Zone Antidote 
                 else if (tirage < (pBonus + pMalus + pFeu + pEau + pPoison + pAntidote)) {
-                    cases[x][y].setItem(new Antidote());
+                    cases[x][y].setItem(ItemFactory.creerItem("antidote"));
                 }
-                // 7. Zone Piège Mortel 
                 else if (tirage < (pBonus + pMalus + pFeu + pEau + pPoison + pAntidote + pPiege)) {
-                    cases[x][y].setItem(new Piege());
+                    cases[x][y].setItem(ItemFactory.creerItem("piege"));
                 }
-                
-                // Le reste (50 à 99) reste vide.
             }
         }
     }
@@ -122,9 +108,89 @@ public class Grille {
         return voisins;
     }
 
+    public void afficherGrille(Proie p, Chasseur s) {
+
+        List<Case> visibles = getPlusProcheVoisin(p.position);
+
+        for (int y = 0; y < hauteur; y++) {
+            for (int x = 0; x < largeur; x++) {
+                Case courante = cases[x][y];
+
+                
+                if (p.position == courante) {
+                    System.out.print("[P]");
+                } 
+                
+                /*
+                else if (p.aDejaVisite(courante)) {
+                	System.out.print("[.]"); //affiche les cases déjà visitées
+                } 
+                */
+            
+                else if (visibles.contains(courante)) {
+                	
+                    if (courante.contientItem()) {
+                        Item objet = courante.item;
+                   
+                        if (objet.getEnergie() > 0) {
+                            System.out.print("[+]"); 
+                        } else {
+                            System.out.print("[-]"); 
+                        }
+                    } 
+                    else {
+                        System.out.print("[ ]"); 
+                    }
+                }
+                
+                else if (s.position == courante) {
+                    System.out.print("[C]");
+                } 
+                
+                else {
+                    System.out.print("[ ]"); 
+                }
+                
+            }
+            System.out.println(); 
+        }
+    }
     
+    public void afficherGrilleHistorique(Proie p, Chasseur s) {
+        for (int y = 0; y < hauteur; y++) {
+            for (int x = 0; x < largeur; x++) {
+                Case courante = cases[x][y];
+
+              
+                if (p.position == courante) {
+                    System.out.print("[P]");
+                } 
+                else if (s.position == courante) {
+                    System.out.print("[C]");
+                } 
+       
+                else if (p.aDejaVisite(courante)) {
+                    if (courante.contientItem()) {
+                        Item objet = courante.item;
+                        if (objet.getEnergie() > 0) {
+                            System.out.print("[+]"); 
+                        } else {
+                            System.out.print("[-]");
+                        }
+                    } else {
+                        System.out.print("[ ]"); 
+                    }
+                } 
+               
+                else {
+                    System.out.print("[.]"); 
+                }
+            }
+            System.out.println(); 
+        }
+    }
     
-    public void afficherGrille(Proie p,Chasseur s) {
+    public void afficherGrilleOmniscient(Proie p,Chasseur s) {
         for (int y = 0; y < hauteur; y++) {
             for (int x = 0; x < largeur; x++) {
             	if (p != null && p.position.x == x && p.position.y == y) {
@@ -137,31 +203,31 @@ public class Grille {
                     Item objet = cases[x][y].item;
                     
                     if (objet instanceof Poison) {
-                        System.out.print("[~]"); // ~ pour représenter la fumée du poison
+                        System.out.print("[~]"); 
                     } 
                     else if (objet instanceof Antidote) {
-                        System.out.print("[A]"); // A pour Antidote
+                        System.out.print("[A]"); 
                     } 
                     else if (objet instanceof Piege) {
-                        System.out.print("[X]"); // X pour un danger mortel
+                        System.out.print("[X]"); 
                     } 
                     else if (objet instanceof AdaptateurFeu) {
-                        System.out.print("[F]"); // F pour Feu
+                        System.out.print("[F]"); 
                     } 
                     else if (objet instanceof AdaptateurEau) {
-                        System.out.print("[E]"); // E pour Eau
+                        System.out.print("[E]"); 
                     } 
                     else if (objet instanceof Element) {
-                        // Pour les Elements classiques, on regarde l'énergie
+                        
                         if (objet.getEnergie() > 0) {
-                            System.out.print("[+]"); // Bonus classique
+                            System.out.print("[+]"); 
                         } else {
-                            System.out.print("[-]"); // Malus classique
+                            System.out.print("[-]"); 
                         }
                     }
             	}
                   else if (x == xCible && y == yCible) {
-                    System.out.print("[O]"); // cible
+                    System.out.print("[O]"); 
                 } else {
                     System.out.print("[ ]"); // case vide
                 }
