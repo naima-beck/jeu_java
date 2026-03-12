@@ -70,8 +70,8 @@ public class ControleurConsole {
         else if (choix.equals("Q")) x--;
         else if (choix.equals("D")) x++;
 
-        if (x >= 0 && x < jeu.grille.largeur && y >= 0 && y < jeu.grille.hauteur) {
-            return jeu.grille.cases[x][y];
+        if (x >= 0 && x < jeu.grille.getLargeur() && y >= 0 && y < jeu.grille.getHauteur()) {
+            return jeu.grille.getCases()[x][y];
         }
         System.out.println("Mouvement invalide !");
         return null;
@@ -82,8 +82,8 @@ public class ControleurConsole {
         try {
             int nx = sc.nextInt();
             int ny = sc.nextInt();
-            if (nx >= 0 && nx < jeu.grille.largeur && ny >= 0 && ny < jeu.grille.hauteur) {
-                Case cible = jeu.grille.cases[nx][ny];
+            if (nx >= 0 && nx < jeu.grille.getLargeur() && ny >= 0 && ny < jeu.grille.getHauteur()) {
+                Case cible = jeu.grille.getCases()[nx][ny];
                 if (!jeu.proie.aDejaVisite(cible)) return cible;
                 else System.out.println("Case déjà visitée !");
             }

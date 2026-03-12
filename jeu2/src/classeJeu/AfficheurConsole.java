@@ -19,14 +19,14 @@ public class AfficheurConsole implements Observer {
     		
     		if (jeu.proie.getStrategy() instanceof StrategieManuelle) {
     			System.out.println("--- VISION LOCALE (Mode Manuel) ---");
-	            //jeu.grille.afficherGrille(jeu.proie, jeu.chasseur);
-	            jeu.grille.afficherGrilleOmniscient(jeu.proie, jeu.chasseur);
+	            jeu.grille.afficherGrille(jeu.proie, jeu.chasseur);
+	            //jeu.grille.afficherGrilleOmniscient(jeu.proie, jeu.chasseur);
 	            
     		}
     		else if (jeu.proie.getStrategy() instanceof StrategieLibre) {
     	        System.out.println("--- CARTE MÉMOIRE (Mode Libre) ---");
-    	        //jeu.grille.afficherGrilleHistorique(jeu.proie, jeu.chasseur);
-    	        jeu.grille.afficherGrilleOmniscient(jeu.proie, jeu.chasseur);
+    	        jeu.grille.afficherGrilleHistorique(jeu.proie, jeu.chasseur);
+    	        //jeu.grille.afficherGrilleOmniscient(jeu.proie, jeu.chasseur);
     	    }
     		
     		System.out.println("Énergie Proie : " + jeu.proie.energie);

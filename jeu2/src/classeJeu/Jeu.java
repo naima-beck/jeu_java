@@ -41,8 +41,8 @@ public class Jeu { //
     	
     	genererGrille();
     	
-    	Case caseDepartChasseur = grille.cases[0][0];
-    	Case caseDepartProie = grille.cases[(grille.largeur - 1)/2][(grille.hauteur - 1)/2]; // la proie commence au milieu
+    	Case caseDepartChasseur = grille.getCases()[0][0];
+    	Case caseDepartProie = grille.getCases()[(grille.getLargeur() - 1)/2][(grille.getHauteur() - 1)/2]; // la proie commence au milieu
     	
     	this.chasseur = new Chasseur(50, caseDepartChasseur); 
         this.proie = new Proie(50, caseDepartProie);
@@ -172,14 +172,14 @@ public class Jeu { //
     
 
     private boolean verifVictoireProie() { //retourne booléen
-    	if(proie.position.x == grille.xCible && proie.position.y == grille.yCible) 
+    	if(proie.position.x == grille.getXCible() && proie.position.y == grille.getYCible()) 
     		return true;
     	
     	return false;
     }
     
     private boolean verifVictoireChasseur() {
-    	if (chasseur.position.x == grille.xCible && chasseur.position.y == grille.yCible)
+    	if (chasseur.position.x == grille.getXCible() && chasseur.position.y == grille.getYCible())
             return true;
     	if(proie.mort)
     		return true;

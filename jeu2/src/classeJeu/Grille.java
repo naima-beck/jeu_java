@@ -4,23 +4,29 @@ import java.util.*;
 
 public class Grille {
 	
-	public int hauteur;
+	private int hauteur;
 
-    public int largeur;
+	private int largeur;
     
-    public Case[][] cases;
+    private Case[][] cases;
 
-    public int xCible;
+    private int xCible;
 
-    public int yCible;
+    private int yCible;
 
     private Random random = new Random();
     
+    public int getLargeur() { return largeur; }
+    public int getHauteur() { return hauteur; }
+    public Case[][] getCases() { return cases; }
+    public int getXCible() { return xCible; }
+    public int getYCible() { return yCible; }
     
     public Grille(int hauteur, int largeur) {
     	this.hauteur=hauteur;
     	this.largeur=largeur;
     	this.cases = new Case[largeur][hauteur];
+    	
     	
     	// Initialisation du tableau avec des cases vides
         for (int x = 0; x < largeur; x++) {

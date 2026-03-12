@@ -36,8 +36,8 @@ public class ControleurInterface extends KeyAdapter {
                 default: return; 
             }
 
-            if (nx >= 0 && nx < jeu.grille.largeur && ny >= 0 && ny < jeu.grille.hauteur) {
-                cible = jeu.grille.cases[nx][ny];
+            if (nx >= 0 && nx < jeu.grille.getLargeur() && ny >= 0 && ny < jeu.grille.getHauteur()) {
+                cible = jeu.grille.getCases()[nx][ny];
             }
         }
 

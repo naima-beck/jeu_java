@@ -35,9 +35,9 @@ public class Chasseur extends Personnage {
         Map<Case, Integer> couts = new HashMap<>();
         Map<Case, Case> parents = new HashMap<>();
         PriorityQueue<Case> filePriorite = new PriorityQueue<>(Comparator.comparingInt(c -> couts.getOrDefault(c, Integer.MAX_VALUE)));
-        for (int x = 0; x < grille.largeur; x++) {
-            for (int y = 0; y < grille.hauteur; y++) {
-                couts.put(grille.cases[x][y], Integer.MAX_VALUE);
+        for (int x = 0; x < grille.getLargeur(); x++) {
+            for (int y = 0; y < grille.getHauteur(); y++) {
+                couts.put(grille.getCases()[x][y], Integer.MAX_VALUE);
             }
         }
         

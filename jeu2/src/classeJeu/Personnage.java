@@ -6,13 +6,13 @@ import java.util.List;
 
 public class Personnage {
 
-	public String nom;
+	protected String nom;
 	
-    public int energie;
+	protected int energie;
 
-    public Case position;
+	protected Case position;
 
-    public boolean mort;
+	protected boolean mort;
 
     public Case c;
 

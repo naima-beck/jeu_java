@@ -15,8 +15,8 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
 
     public AfficheurInterfaceGraphique(Jeu jeu) {
         this.jeu = jeu;
-        int largeur = jeu.grille.largeur;
-        int hauteur = jeu.grille.hauteur;
+        int largeur = jeu.grille.getLargeur();
+        int hauteur = jeu.grille.getHauteur();
 
         setTitle("Chasseur et Bonhomme - Vue Graphique");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -44,7 +44,7 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
                     public void mouseClicked(java.awt.event.MouseEvent e) {
                         // On prévient le jeu qu'on a cliqué sur cette case
                         if (jeu.jeuEnCours && jeu.proie.getStrategy() instanceof StrategieLibre) {
-                            jeu.tourDeJeu(jeu.grille.cases[finalX][finalY]);
+                            jeu.tourDeJeu(jeu.grille.getCases()[finalX][finalY]);
                         }
                     }
                 });
@@ -181,8 +181,8 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
         this.jeu.genererGrille();
         
         // Repositionner les personnages
-        Case caseDepartChasseur = jeu.grille.cases[0][0];
-        Case caseDepartProie = jeu.grille.cases[(jeu.grille.largeur - 1)/2][(jeu.grille.hauteur - 1)/2];
+        Case caseDepartChasseur = jeu.grille.getCases()[0][0];
+        Case caseDepartProie = jeu.grille.getCases()[(jeu.grille.getLargeur() - 1)/2][(jeu.grille.getHauteur() - 1)/2];
         
         this.jeu.chasseur = new Chasseur(50, caseDepartChasseur);
         this.jeu.proie = new Proie(50, caseDepartProie);
@@ -253,9 +253,9 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
 
         nettoyerPlateau();
 
-        for (int y = 0; y < jeu.grille.hauteur; y++) {
-            for (int x = 0; x < jeu.grille.largeur; x++) {
-                Case courante = jeu.grille.cases[x][y];
+        for (int y = 0; y < jeu.grille.getHauteur(); y++) {
+            for (int x = 0; x < jeu.grille.getLargeur(); x++) {
+                Case courante = jeu.grille.getCases()[x][y];
                 String fond = "brouillard"; 
                 String icone = null;
                 String symbole = "";
@@ -295,9 +295,9 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
         Case posProie = jeu.proie.getPosition();
         Case posChasseur = jeu.chasseur.getPosition();
 
-        for (int y = 0; y < jeu.grille.hauteur; y++) {
-            for (int x = 0; x < jeu.grille.largeur; x++) {
-                Case courante = jeu.grille.cases[x][y];
+        for (int y = 0; y < jeu.grille.getHauteur(); y++) {
+            for (int x = 0; x < jeu.grille.getLargeur(); x++) {
+                Case courante = jeu.grille.getCases()[x][y];
                 String fond = jeu.proie.aDejaVisite(courante) ? "trace_pas" : "brouillard";
                 String icone = null;
                 String symbole = "";
@@ -324,15 +324,15 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
 
     public void afficherVueOmnisciente() {
         nettoyerPlateau();
-        for (int y = 0; y < jeu.grille.hauteur; y++) {
-            for (int x = 0; x < jeu.grille.largeur; x++) {
-                Case courante = jeu.grille.cases[x][y];
+        for (int y = 0; y < jeu.grille.getHauteur(); y++) {
+            for (int x = 0; x < jeu.grille.getLargeur(); x++) {
+                Case courante = jeu.grille.getCases()[x][y];
                 String icone = null;
                 String symbole = "";
 
                 if (courante.equals(jeu.proie.getPosition())) { icone = "proie"; symbole = "P"; }
                 else if (courante.equals(jeu.chasseur.getPosition())) { icone = "chasseur"; symbole = "C"; }
-                else if (x == jeu.grille.xCible && y == jeu.grille.yCible) { icone = "cible"; symbole = "O"; }
+                else if (x == jeu.grille.getXCible() && y == jeu.grille.getYCible()) { icone = "cible"; symbole = "O"; }
                 else if (courante.contientItem()) {
                     Item obj = courante.item;
                     
@@ -358,8 +358,8 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
     
 
     private void nettoyerPlateau() {
-        for (int y = 0; y < jeu.grille.hauteur; y++) {
-            for (int x = 0; x < jeu.grille.largeur; x++) {
+        for (int y = 0; y < jeu.grille.getHauteur(); y++) {
+            for (int x = 0; x < jeu.grille.getLargeur(); x++) {
                 casesGraphiques[x][y].setIcon(null);
                 casesGraphiques[x][y].setText("");
                 casesGraphiques[x][y].setBackground(Color.WHITE);
