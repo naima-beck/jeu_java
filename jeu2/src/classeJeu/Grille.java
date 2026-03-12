@@ -35,44 +35,24 @@ public class Grille {
     }
 
     
-    public void placerBonusMalus(int pBonus, int pMalus, int pFeu, int pEau, int pPoison, int pAntidote, int pPiege) {
-        
-        // Sécurité : On vérifie que le total ne dépasse pas 100%
-    	int total = pBonus + pMalus + pFeu + pEau + pPoison + pAntidote + pPiege;
-        if (total > 100) {
-            System.out.println("Erreur : Total > 100%. Je remets des valeurs par défaut.");
-            // On répartit un peu au hasard pour que ça fasse moins de 100
-            pBonus = 10; pMalus = 10; pFeu = 5; pEau = 5; pPoison = 5; pAntidote = 5; pPiege = 2; 
-        }
-
+    public void placerItems(Map<String, Integer> configuration) {
         for (int x = 0; x < largeur; x++) {
             for (int y = 0; y < hauteur; y++) {
+                // Sécurité : Ne pas poser d'item sur la Proie ou la Cible
                 if ((x == (largeur - 1)/2 && y == (hauteur - 1)/2) || (x == xCible && y == yCible)) { 
                     continue; 
                 }
 
                 int tirage = random.nextInt(100);
+                int seuilCumule = 0;
 
-                if (tirage < pBonus) {
-                    cases[x][y].setItem(ItemFactory.creerItem("bonus"));
-                } 
-                else if (tirage < (pBonus + pMalus)) {
-                    cases[x][y].setItem(ItemFactory.creerItem("malus"));
-                }
-                else if (tirage < (pBonus + pMalus + pFeu)) {
-                    cases[x][y].setItem(ItemFactory.creerItem("feu"));
-                }
-                else if (tirage < (pBonus + pMalus + pFeu + pEau)) {
-                    cases[x][y].setItem(ItemFactory.creerItem("eau"));
-                }
-                else if (tirage < (pBonus + pMalus + pFeu + pEau + pPoison)) {
-                    cases[x][y].setItem(ItemFactory.creerItem("poison"));
-                }
-                else if (tirage < (pBonus + pMalus + pFeu + pEau + pPoison + pAntidote)) {
-                    cases[x][y].setItem(ItemFactory.creerItem("antidote"));
-                }
-                else if (tirage < (pBonus + pMalus + pFeu + pEau + pPoison + pAntidote + pPiege)) {
-                    cases[x][y].setItem(ItemFactory.creerItem("piege"));
+                // On parcourt la map des probabilités
+                for (Map.Entry<String, Integer> entry : configuration.entrySet()) {
+                    seuilCumule += entry.getValue();
+                    if (tirage < seuilCumule) {
+                        cases[x][y].setItem(ItemFactory.creerItem(entry.getKey()));
+                        break; // Item placé, on passe à la case suivante
+                    }
                 }
             }
         }
@@ -107,10 +87,41 @@ public class Grille {
         
         return voisins;
     }
+    
+    public List<Case> getVoisinsRayon(Case centre, int rayon) {
+        List<Case> voisins = new ArrayList<>();
+        for (int dx = -rayon; dx <= rayon; dx++) {
+            for (int dy = -rayon; dy <= rayon; dy++) {
+                int nx = centre.x + dx;
+                int ny = centre.y + dy;
+                if (estDansLaGrille(nx, ny)) {
+                    voisins.add(cases[nx][ny]);
+                }
+            }
+        }
+        return voisins;
+    }
+    
+    public Case getRandomCaseExcluding(Case caseAExclure) {
+        int nx, ny;
+        do {
+            nx = random.nextInt(largeur);
+            ny = random.nextInt(hauteur);
+        } while (nx == caseAExclure.x && ny == caseAExclure.y);
+        
+        return cases[nx][ny];
+    }
 
     public void afficherGrille(Proie p, Chasseur s) {
 
-        List<Case> visibles = getPlusProcheVoisin(p.position);
+    	List<Case> visibles;
+        if (p.getEtat() instanceof EtatVisionEtendue) {
+            // On utilise le rayon de 3 cases si les jumelles sont actives
+            visibles = getVoisinsRayon(p.position, 2);
+        } else {
+            // Sinon vision classique (adjacentes)
+            visibles = getPlusProcheVoisin(p.position);
+        }
 
         for (int y = 0; y < hauteur; y++) {
             for (int x = 0; x < largeur; x++) {
@@ -217,6 +228,12 @@ public class Grille {
                     else if (objet instanceof AdaptateurEau) {
                         System.out.print("[E]"); 
                     } 
+                    else if (objet instanceof Teleporteur) {
+                        System.out.print("[T]"); // T pour Téléporteur
+                    } 
+                    else if (objet instanceof Jumelles) {
+                        System.out.print("[J]"); // J pour Jumelles
+                    }
                     else if (objet instanceof Element) {
                         
                         if (objet.getEnergie() > 0) {

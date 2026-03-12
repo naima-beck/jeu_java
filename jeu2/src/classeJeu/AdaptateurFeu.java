@@ -19,7 +19,7 @@ public class AdaptateurFeu implements Item {
     
     @Override
     public void interagir(Personnage p) {
-        // Au lieu de simples dégâts, on change l'état
+    	p.energie += this.getEnergie();
         p.setEtat(new EtatEtourdi());
     }
 }

@@ -3,26 +3,23 @@ import java.util.List;
 import java.util.Scanner;
 
 public class StrategieManuelle implements DeplacementStrategy {
-    private Scanner sc = new Scanner(System.in);
-
-    @Override
+    
+	@Override
     public Case choisirProchaineCase(Personnage p, Grille g) {
-    	System.out.println("MODE MANUEL : Entrez Z, Q, S ou D (Z=haut, S=bas, Q=gauche, D=droite) : ");    	
-        String choix = sc.next().toUpperCase();
-        int x = p.position.x;
-        int y = p.position.y;
-
-        if (choix.equals("Z")) y--;
-        else if (choix.equals("S")) y++;
-        else if (choix.equals("Q")) x--;
-        else if (choix.equals("D")) x++;
-
-        // On vérifie si la case est dans la grille
-        if (x >= 0 && x < g.largeur && y >= 0 && y < g.hauteur) {
-            return g.cases[x][y];
-        }
-        return p.position; // Reste sur place si hors grille
+        // Cette méthode ne sera plus utilisée par l'interface graphique
+        // Mais on peut la laisser pour le mode Console pur si tu veux
+        return p.position; 
     }
+
+    // AJOUTE CETTE MÉTHODE pour l'interface graphique
+    public boolean estMouvementValide(Case actuelle, Case cible) {
+        // En manuel, on ne peut bouger que d'une case (adjacente)
+        int dist = Math.abs(actuelle.x - cible.x) + Math.abs(actuelle.y - cible.y);
+        return dist == 1;
+    }
+	
+	
+	
     
    
 

@@ -24,6 +24,22 @@ public class Proie extends Personnage {
         this.maStrategie = s;
     }
 
+ // --- MÉTHODE 1 : C'est elle qui gère maintenant l'historique ---
+    @Override
+    public String seDeplacer(Case c) {
+        if (c == null) return null;
+
+        // LE PAPIER : On enregistre la case AVANT de bouger
+        if (!casesVisitees.contains(c)) {
+            casesVisitees.add(c);
+        }
+
+        // On appelle la logique de Personnage (items, énergie, messages)
+        // C'est ce "super" qui fait le lien avec ton code ci-dessus
+        return super.seDeplacer(c);
+    }
+
+    // --- MÉTHODE 2 : On la nettoie pour qu'elle ne fasse QUE le choix de case ---
     public String seDeplacer(Grille grille, Jeu jeu) {
         Case prochaine;
 
@@ -39,16 +55,15 @@ public class Proie extends Personnage {
             prochaine = maStrategie.choisirProchaineCase(this, grille);
         }
 
-        // On appelle le seDeplacer de Personnage pour gérer l'énergie et les items
-        String message = super.seDeplacer(prochaine);
-
-        // APRÈS le déplacement réussi, on note la nouvelle case sur le papier
-        if (prochaine != null && !casesVisitees.contains(prochaine)) {
-            casesVisitees.add(prochaine);
-        }
-
-        return message;
+        // NOTE : On a supprimé le bloc "casesVisitees.add" ici 
+        // car il est maintenant géré automatiquement juste au-dessus !
+        
+        // On appelle notre propre méthode seDeplacer(Case) 
+        // qui va s'occuper du papier ET du mouvement Personnage
+        return this.seDeplacer(prochaine);
     }
+    
+    
    
 
 }

@@ -9,7 +9,7 @@ public class EtatEtourdi implements Etat {
     public String appliquerEffets(Personnage p) {
         if (toursRestants > 0) {
             toursRestants--;
-            return p.nom + " est étourdi ! (Encore " + toursRestants + " tours de confusion)";
+            return p.nom + " est étourdi ! (Encore " + (toursRestants+1) + " tours de confusion)";
         } else {
             p.setEtat(new EtatNormal());
             return p.nom + " reprend ses esprits.";

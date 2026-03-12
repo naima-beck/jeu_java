@@ -5,6 +5,15 @@ public class AfficheurConsole implements Observer {
     public void actualiser(Jeu jeu, TypeNotification type) {
     	
     	switch (type) {
+    	case DEBUT_PARTIE:
+    	    System.out.println("==========================================");
+    	    System.out.println("   BIENVENUE DANS LA CHASSE AU BONHOMME   ");
+    	    System.out.println("==========================================");
+    	    System.out.println(" Objectif : Atteindre la cible 'O' !");
+    	    System.out.println(" Attention au Chasseur 'C' et aux pièges.");
+    	    System.out.println("==========================================\n");
+    	    break;
+    	    
     	case DEBUT_TOUR:
     		System.out.println("\n>>> TOUR " + jeu.nbTour);
     		
@@ -32,25 +41,13 @@ public class AfficheurConsole implements Observer {
             break;
     
     	case FIN_PARTIE:
-    		if (!jeu.jeuEnCours) {
-                System.out.println("\n=== FIN DE PARTIE ===");
-                jeu.grille.afficherGrille(jeu.proie, jeu.chasseur);
-                //jeu.grille.afficherGrilleOmniscient(jeu.proie, jeu.chasseur);
-                
-                Personnage gagnant = jeu.determinerVainqueur();
-                
-                if (gagnant instanceof Proie) {
-                    System.out.println("Victoire ! La proie s'est échappée et a atteint la cible !");
-                } else if (gagnant instanceof Chasseur) {
-                    if (jeu.proie.mort) {
-                        System.out.println("GAME OVER ! La proie est morte.");
-                    } else {
-                        System.out.println("GAME OVER ! Le chasseur a atteint la cible.");
-                    }
-                } else {
-                    System.out.println("Égalité : Tout le monde est mort...");
-                }
-    		}
+    	    if (!jeu.jeuEnCours) {
+    	        System.out.println(jeu.genererBilanFin()); // On affiche le texte généré par le jeu
+    	        jeu.grille.afficherGrilleOmniscient(jeu.proie, jeu.chasseur);
+    	    }
+    	    break;
         }
+    	
+    	
     }
 }

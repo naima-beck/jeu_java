@@ -20,6 +20,10 @@ public class ItemFactory {
                 return new Antidote();
             case "piege":
                 return new Piege();
+            case "teleporteur": 
+            	return new Teleporteur(); 
+            case "jumelles": 
+            	return new Jumelles();
             default:
                 return null;
         }

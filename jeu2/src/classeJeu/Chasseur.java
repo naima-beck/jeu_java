@@ -34,8 +34,7 @@ public class Chasseur extends Personnage {
         // Initialisation des coûts (infini partout sauf au départ)
         Map<Case, Integer> couts = new HashMap<>();
         Map<Case, Case> parents = new HashMap<>();
-        PriorityQueue<Case> filePriorite = new PriorityQueue<>(Comparator.comparingInt(couts::get));
-
+        PriorityQueue<Case> filePriorite = new PriorityQueue<>(Comparator.comparingInt(c -> couts.getOrDefault(c, Integer.MAX_VALUE)));
         for (int x = 0; x < grille.largeur; x++) {
             for (int y = 0; y < grille.hauteur; y++) {
                 couts.put(grille.cases[x][y], Integer.MAX_VALUE);
@@ -109,9 +108,10 @@ public class Chasseur extends Personnage {
         
         // CAS DES DANGERS (Toujours prioritaires)
         if (it instanceof Piege) return (this.energie > 15) ? 10 : 1000; 
-        if (it instanceof Poison) return 100;
+        if (it instanceof Poison) return 50;
         if (it instanceof AdaptateurFeu) return 50;
         if (it instanceof AdaptateurEau) return 50;
+        if (it instanceof Teleporteur) return 5; // il est très attiré par les trous lol
 
         // CAS DES BONUS (Intelligence adaptative)
         if (it instanceof Element && it.getEnergie() > 0) {
