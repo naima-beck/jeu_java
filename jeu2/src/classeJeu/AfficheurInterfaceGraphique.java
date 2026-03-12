@@ -22,7 +22,7 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout(10, 10)); // Espacement entre les panneaux
 
-        // --- PLATEAU DE JEU ---
+        //Plateau de jeu
         JPanel plateau = new JPanel(new GridLayout(hauteur, largeur, 2, 2));
         plateau.setBackground(Color.DARK_GRAY); // Couleur des "interstices"
         plateau.setBorder(new EmptyBorder(10, 10, 10, 10)); // Marge autour de la grille
@@ -53,7 +53,7 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
             }
         }
 
-        // --- PANNEAU LATÉRAL ---
+        //Panneau latéral
         JPanel sidePanel = new JPanel();
         sidePanel.setLayout(new BorderLayout(5, 5));
         sidePanel.setPreferredSize(new Dimension(300, 0));
@@ -84,18 +84,16 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
         JButton btnRestart = new JButton("Nouvelle Partie");
         btnRestart.setFocusable(false);
 
-        // Ces trois lignes sont le "kit de survie" pour la couleur Swing
         btnRestart.setOpaque(true);
         btnRestart.setBorderPainted(true);
         btnRestart.setContentAreaFilled(true); 
 
-        // Couleur de fond (Bleu Acier) et texte
+        //Couleur de fond bleu et texte
         btnRestart.setBackground(new Color(41, 128, 185)); 
         btnRestart.setForeground(Color.WHITE);
         btnRestart.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnRestart.setBorder(BorderFactory.createLineBorder(new Color(52, 152, 219), 2));
 
-        // Correction du MouseListener pour que le survol soit violent et visible
         btnRestart.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnRestart.setBackground(new Color(52, 152, 219)); // Bleu plus clair
@@ -107,11 +105,11 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
         });
 
         btnRestart.addActionListener(e -> {
-            // Logique de réinitialisation
+            //Logique de réinitialisation
             reinitialiserJeu();
         });
 
-        // Ajouter le bouton en bas du sidePanel
+        //Ajouter le bouton en bas du sidePanel
         sidePanel.add(btnRestart, BorderLayout.SOUTH);
         
         JButton btnConsole = new JButton("Passer en Console");
@@ -120,13 +118,13 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
         btnConsole.setBorderPainted(true);
         btnConsole.setContentAreaFilled(true); 
 
-        // Couleur de fond : Vert Émeraude "Pro"
+        //Couleur de fond vert 
         btnConsole.setBackground(new Color(39, 174, 96)); 
         btnConsole.setForeground(Color.WHITE);
         btnConsole.setFont(new Font("Segoe UI", Font.BOLD, 14));
         btnConsole.setBorder(BorderFactory.createLineBorder(new Color(46, 204, 113), 2));
 
-        // Effet de survol pour le vert
+        //Effet de survol pour le vert
         btnConsole.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 btnConsole.setBackground(new Color(46, 204, 113)); // Vert plus clair
@@ -156,14 +154,13 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
         JPanel panelBoutons = new JPanel(new GridLayout(2, 1, 5, 5)); // 2 lignes, 1 colonne, 5px d'écart
         panelBoutons.setOpaque(false); // Pour garder la couleur du sidePanel
 
-        // 3. On ajoute les boutons DANS le petit panel
+        //On ajoute les boutons dans le petit panel
         panelBoutons.add(btnRestart);
         panelBoutons.add(btnConsole);
 
-        // 4. On ajoute le panel DANS le panneau latéral à la place de l'ancien bouton
+        //On ajoute le panel dans le panneau latéral à la place de l'ancien bouton
         sidePanel.add(panelBoutons, BorderLayout.SOUTH);
 
-        // --- ASSEMBLAGE FINAL (déjà dans ton code normalement) ---
         add(plateau, BorderLayout.CENTER);
         add(sidePanel, BorderLayout.EAST);
 
@@ -175,29 +172,28 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
     }
 
     private void reinitialiserJeu() {
-        // 1. On réinitialise les données du jeu (on peut recréer les objets ou faire une méthode reset dans Jeu)
+        //On réinitialise les données du jeu
         this.jeu.nbTour = 0;
         this.jeu.jeuEnCours = true;
         this.jeu.genererGrille();
         
-        // Repositionner les personnages
+        //Repositionner les personnages
         Case caseDepartChasseur = jeu.grille.getCases()[0][0];
         Case caseDepartProie = jeu.grille.getCases()[(jeu.grille.getLargeur() - 1)/2][(jeu.grille.getHauteur() - 1)/2];
         
         this.jeu.chasseur = new Chasseur(50, caseDepartChasseur);
         this.jeu.proie = new Proie(50, caseDepartProie);
         
-        // 2. Prévenir tout le monde
+        // Prévenir tout le monde
         this.jeu.notifierObservateurs(TypeNotification.DEBUT_PARTIE);
         this.jeu.notifierObservateurs(TypeNotification.DEBUT_TOUR);
         
-        // 3. Redonner le focus à la fenêtre pour pouvoir jouer de suite
+        //Redonner le focus à la fenêtre pour pouvoir jouer de suite
         this.requestFocusInWindow();
     }
     
     @Override
     public void actualiser(Jeu jeu, TypeNotification type) {
-        // 1. Gestion des messages (Ton code actuel)
         switch (type) {
         	
 	        case DEBUT_PARTIE:
@@ -205,11 +201,10 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
 	            journal.append("=== Nouvelle Partie Lancée ===\n");
 	            journal.append("Bonne chance !\n");
 	            
-	            // On force l'affichage initial des statistiques (50 | 50)
-	            mettreAJourStats();
 	            
-	            // On dessine la grille de départ
-	            afficherVueLocale(); 
+	            mettreAJourStats(); //On force l'affichage initial des statistiques 
+	           
+	            afficherVueLocale(); //On dessine la grille de départ
 	            break;
             
             case DEBUT_TOUR:
@@ -227,7 +222,7 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
                 break;
         }
 
-        // 2. Choix de la vue dynamique pendant le jeu
+        //Choix de la vue dynamique pendant le jeu
         if (jeu.proie.getStrategy() instanceof StrategieManuelle) {
         	//afficherVueOmnisciente(); 
         	afficherVueLocale();
@@ -238,8 +233,6 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
     }
     
     
-
-    // --- LES 3 MÉTHODES DE DESSIN ---
 
     public void afficherVueLocale() {
         Case posProie = jeu.proie.getPosition();
@@ -260,7 +253,7 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
                 String icone = null;
                 String symbole = "";
 
-                // 1. DÉTERMINER LE FOND (Indépendant des personnages)
+                //Déterminer le fond
                 if (visibles.contains(courante)) {
                     fond = "sol_visible";
                 } else if (jeu.proie.aDejaVisite(courante)) {
@@ -268,7 +261,7 @@ public class AfficheurInterfaceGraphique extends JFrame implements Observer {
                     // fond = "trace_pas"; 
                 }
 
-                // 2. DÉTERMINER L'ICÔNE (Priorité absolue aux personnages, peu importe le fond)
+                // 2.Dterminer l'icône
                 if (courante.equals(posProie)) {
                     icone = "proie"; symbole = "P";
                     fond = "sol_visible"; // On force l'herbe sous nos pieds

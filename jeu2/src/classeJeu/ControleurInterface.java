@@ -18,12 +18,12 @@ public class ControleurInterface extends KeyAdapter {
 
         Case cible = null;
 
-        // 1. SI ÉTOURDIE : On ignore la touche et on prend un voisin au hasard
+        //Si étourdie : on ignore la touche et on prend un voisin au hasard
         if (jeu.proie.getEtat() instanceof EtatEtourdi) {
             List<Case> voisins = jeu.grille.getPlusProcheVoisin(jeu.proie.position);
             cible = voisins.get(new java.util.Random().nextInt(voisins.size()));
         } 
-        // 2. SINON : On calcule selon la touche pressée
+        //Sinon on calcule selon la touche pressée
         else {
             int nx = jeu.proie.position.x;
             int ny = jeu.proie.position.y;
@@ -41,7 +41,7 @@ public class ControleurInterface extends KeyAdapter {
             }
         }
 
-        // 3. On envoie la cible (choisie ou aléatoire) au jeu
+        //On envoie la cible (choisie ou aléatoire) au jeu
         if (cible != null) {
             jeu.tourDeJeu(cible); 
         }

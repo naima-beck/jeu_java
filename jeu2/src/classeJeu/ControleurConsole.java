@@ -17,14 +17,14 @@ public class ControleurConsole {
             System.out.println("\n--- COMMANDE CONSOLE ---");
             Case cible = null;
 
-            // 1. VERIFICATION CRITIQUE : Si la proie est étourdie, on ne demande rien !
+            //Vérification : si la proie est étourdie, on ne demande rien !
             if (jeu.proie.getEtat() instanceof EtatEtourdi) {
                 System.out.println("(!) La Proie est étourdie... elle titube toute seule !");
                 // On laisse le modèle choisir une case aléatoire
                 List<Case> voisins = jeu.grille.getPlusProcheVoisin(jeu.proie.position);
                 cible = voisins.get(new java.util.Random().nextInt(voisins.size()));
             } 
-            // 2. Sinon, on gère la saisie normale selon la stratégie
+            //Sinon, on gère la saisie normale selon la stratégie
             else {
                 if (jeu.proie.getStrategy() instanceof StrategieManuelle) {
                     cible = gererSaisieManuelle();
@@ -46,10 +46,10 @@ public class ControleurConsole {
         String choix = sc.nextLine();
 
         if (choix.equals("1")) {
-            // Relance en console (récursif ou via une boucle)
+            //Relance en console (récursif ou via une boucle)
             Jeu.main(null); 
         } else if (choix.equals("2")) {
-            // Relance en Interface
+            //Relance en Interface
             Jeu nouvellePartie = new Jeu();
             Jeu.JeuInterface(nouvellePartie);
             nouvellePartie.notifierObservateurs(TypeNotification.DEBUT_PARTIE);

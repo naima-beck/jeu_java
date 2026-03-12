@@ -110,7 +110,7 @@ public class Jeu { //
 
     	verifierChangementStrategie();
 
-        // 2. Mouvement de la Proie (Clavier ou Console, c'est la même chose ici)
+        // Mouvement de la proie
     	if (proie.getEtat() instanceof EtatTeleportation) {
             proie.position = grille.getRandomCaseExcluding(proie.position);
             proie.setEtat(new EtatNormal());
@@ -119,7 +119,7 @@ public class Jeu { //
             // On ne fait pas le mouvement du clic, on passe direct à la suite
         } 
         else {
-            // Mouvement normal de la Proie via ton clic
+            // Mouvement normal de la proie via le clic
             String msg = proie.seDeplacer(cibleClavier); 
             if (msg != null) {
                 setDernierMessage(msg);
@@ -135,7 +135,7 @@ public class Jeu { //
         
         gererCollision(); 
         
-        // 3. Tour du Chasseur
+        //Tour du Chasseur
         if (!estTermine() && chasseur.estVivant()) {
             setDernierMessage("Le Chasseur se déplace...");
             notifierObservateurs(TypeNotification.MESSAGE_SEUL);
@@ -149,7 +149,7 @@ public class Jeu { //
         }
         
 
-        // 4. Notifications de fin ou nouveau tour
+        //Notification de fin ou nouveau tour
         if (estTermine()) {
             jeuEnCours = false;
             notifierObservateurs(TypeNotification.FIN_PARTIE);
