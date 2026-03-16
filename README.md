@@ -112,6 +112,9 @@ Malus : Perte d'énergie (-10).
 
 La Dynamique des Tours : Gestion de l'épuisement progressif de l'énergie. Le jeu se termine si le Chasseur capture la Proie, si la Cible est atteinte, ou par épuisement total de l'énergie (Match Nul).
 
+## Ressources 
+[Lien vers l'énoncé du projet](ProjetFinal.pdf)
+
 ## Auteurs
 - [@naima-beck](https://www.github.com/naima-beck)
 - [@axellelepoul-ctrl](https://www.github.com/axellelepoul-ctrl)
