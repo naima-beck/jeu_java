@@ -3,8 +3,6 @@ Voici le lien vers le powerpoint : https://www.canva.com/design/DAHD2APcJ58/tfHe
 
 Ce projet s’inscrit dans le cadre des Travaux Pratiques de programmation orientée objet. Il porte sur la conception et le développement d'un jeu de simulation au tour par tour opposant deux entités : un Chasseur et une Proie, évoluant sur une grille interactive.
 
-L'objectif est de modéliser des interactions entre des objets autonomes, une gestion d'environnement (grille, obstacles, bonus/malus) et des conditions de victoire multiples. Le projet met l'accent sur la logique algorithmique de déplacement, l'encapsulation des données et la gestion des ressources (énergie).
-
 L’analyse du déroulement du jeu permet de mettre en évidence l'impact des éléments aléatoires sur la durée de vie des entités et l'efficacité de la stratégie de traque du chasseur face aux déplacements de la proie.
 
 ## Objectifs
