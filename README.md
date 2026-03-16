@@ -95,8 +95,7 @@ jeu2/
 └── images/
     ├── sol_visible.png, brouillard.png, trace_pas.png (Décors)
     ├── proie.png, chasseur.png (Personnages)
-    ├── bonus.png, malus.png, poison.png (Items classiques)
-    └── teleporteur.png, jumelles.png (Nouveaux items)
+    └── bonus.png, malus.png, poison.png, teleporteur.png, jumelles.png ... (Items)
 ├──.DS_Store
 ├──.classpath
 ├──.project
