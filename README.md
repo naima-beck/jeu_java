@@ -1,4 +1,6 @@
 # Projet Java : Simulation du Jeu Chasseur et Proie sur Grille
+Voici le lien vers le powerpoint : https://www.canva.com/design/DAHD2APcJ58/tfHej1Nr0DoCvz9MyLc3Ig/edit?utm_content=DAHD2APcJ58&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
 Ce projet s’inscrit dans le cadre des Travaux Pratiques de programmation orientée objet. Il porte sur la conception et le développement d'un jeu de simulation au tour par tour opposant deux entités : un Chasseur et une Proie, évoluant sur une grille interactive.
 
 L'objectif est de modéliser des interactions entre des objets autonomes, une gestion d'environnement (grille, obstacles, bonus/malus) et des conditions de victoire multiples. Le projet met l'accent sur la logique algorithmique de déplacement, l'encapsulation des données et la gestion des ressources (énergie).
