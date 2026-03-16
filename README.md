@@ -12,6 +12,8 @@ Le projet vise à maîtriser les concepts fondamentaux de la Programmation Orien
 Ce projet est une simulation de jeu au tour par tour développée en Java. Il met en scène un Chasseur poursuivant une Proie sur une grille interactive parsemée d'obstacles, de bonus et de malus. L'architecture repose sur des principes avancés de la Programmation Orientée Objet (POO) et des structures algorithmiques complexes.
 
 ## Fonctionnalités Clés
+- La Dynamique des Tours : Gestion de l'épuisement progressif de l'énergie. Le jeu se termine si le Chasseur capture la Proie, si la Cible est atteinte, ou par épuisement total de l'énergie (Match Nul).
+  
 - Système de vision de la proie avec les 2 stratégies : Brouillard de guerre dynamique et mémorisation du parcours de la Proie.
 <img width="947" height="666" alt="Brouillard de guerre" src="https://github.com/user-attachments/assets/25d7149f-3f15-47dc-a23a-315b02e56ad4" />
 <img width="948" height="665" alt="Mémorisation" src="https://github.com/user-attachments/assets/5d5fe161-9d67-4b82-a5ff-921b5d11a5f5" />
@@ -103,14 +105,6 @@ jeu2/
 └──project
 ```
 
-## Composantes du Jeu analysées
-L’étude s’appuie sur trois ensembles de classes principaux : L'Environnement (Grille) : Génération d'un plateau (N  M) avec placement d'une cible fixe et gestion des voisins.
-
-Le Système de Bonus/Malus : Implémentation d'une distribution probabiliste d'objets (Element).
-Bonus : Gain d'énergie (+10).
-Malus : Perte d'énergie (-10).
-
-La Dynamique des Tours : Gestion de l'épuisement progressif de l'énergie. Le jeu se termine si le Chasseur capture la Proie, si la Cible est atteinte, ou par épuisement total de l'énergie (Match Nul).
 
 ## Ressources 
 [Lien vers l'énoncé du projet](ProjetFinal.pdf)
